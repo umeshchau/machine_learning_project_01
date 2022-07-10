@@ -1,38 +1,30 @@
-from setuptools import setup,find_packages
-from typing import List
+from housing.pipeline.pipeline import Pipeline
+from housing.exception import HousingException
+from housing.logger import logging
+from housing.config.configuration import Configuartion
+from housing.component.data_transformation import DataTransformation
+import os
+def main():
+    try:
+        config_path = os.path.join("config","config.yaml")
+        pipeline = Pipeline(Configuartion(config_file_path=config_path))
+        #pipeline.run_pipeline()
+        pipeline.start()
+        logging.info("main function execution completed.")
+        # # data_validation_config = Configuartion().get_data_transformation_config()
+        # # print(data_validation_config)
+        # schema_file_path=r"D:\Project\machine_learning_project\config\schema.yaml"
+        # file_path=r"D:\Project\machine_learning_project\housing\artifact\data_ingestion\2022-06-27-19-13-17\ingested_data\train\housing.csv"
 
-#Declaring variables for setup functions
-PROJECT_NAME="housing-predictor"
-VERSION="0.0.3"
-AUTHOR="Avnish Yadav"
-DESRCIPTION="This is a first FSDS Nov batch Machine Learning Project"
+        # df= DataTransformation.load_data(file_path=file_path,schema_file_path=schema_file_path)
+        # print(df.columns)
+        # print(df.dtypes)
 
-REQUIREMENT_FILE_NAME="requirements.txt"
-
-HYPHEN_E_DOT = "-e ."
-
-
-def get_requirements_list() -> List[str]:
-    """
-    Description: This function is going to return list of requirement
-    mention in requirements.txt file
-    return This function is going to return a list which contain name
-    of libraries mentioned in requirements.txt file
-    """
-    with open(REQUIREMENT_FILE_NAME) as requirement_file:
-        requirement_list = requirement_file.readlines()
-        requirement_list = [requirement_name.replace("\n", "") for requirement_name in requirement_list]
-        if HYPHEN_E_DOT in requirement_list:
-            requirement_list.remove(HYPHEN_E_DOT)
-        return requirement_list
+    except Exception as e:
+        logging.error(f"{e}")
+        print(e)
 
 
 
-setup(
-name=PROJECT_NAME,
-version=VERSION,
-author=AUTHOR,
-description=DESRCIPTION,
-packages=find_packages(), 
-install_requires=get_requirements_list()
-)
+if __name__=="__main__":
+    main()
